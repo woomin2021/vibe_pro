@@ -3,10 +3,15 @@ import './App.css'
 
 function App() {
   const [indices, setIndices] = useState([]);
+  const [news, setNews] = useState([]);
+  const [summary, setSummary] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingNews, setIsLoadingNews] = useState(true);
+  const [isSummaryLoading, setIsSummaryLoading] = useState(true);
   const today = "2026년 2월 23일";
 
   useEffect(() => {
+    // 지수 데이터 페칭
     fetch('http://localhost:8080/api/briefing/indices')
       .then(response => response.json())
       .then(data => {
@@ -17,13 +22,31 @@ function App() {
         console.error('Error fetching indices:', error);
         setIsLoading(false);
       });
-  }, []);
 
-  const summaryItems = [
-    "엔비디아의 실적 발표 이후 기술주 중심의 강력한 매수세가 유입되었습니다.",
-    "연준 위원들의 매파적 발언에도 불구하고 AI 산업에 대한 기대감이 시장을 주도했습니다.",
-    "달러 인덱스는 소폭 하락하며 위험 자산 선호 심리가 개선되는 모습을 보였습니다."
-  ];
+    // 뉴스 데이터 페칭
+    fetch('http://localhost:8080/api/briefing/news')
+      .then(response => response.json())
+      .then(data => {
+        setNews(data);
+        setIsLoadingNews(false);
+      })
+      .catch(error => {
+        console.error('Error fetching news:', error);
+        setIsLoadingNews(false);
+      });
+
+    // AI 요약 데이터 페칭
+    fetch('http://localhost:8080/api/briefing/summary')
+      .then(response => response.json())
+      .then(data => {
+        setSummary(data);
+        setIsSummaryLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching summary:', error);
+        setIsSummaryLoading(false);
+      });
+  }, []);
 
   return (
     <div className="container">
@@ -39,9 +62,13 @@ function App() {
             <h3>밤사이 핵심 요약</h3>
           </div>
           <ul className="summary-list">
-            {summaryItems.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
+            {isSummaryLoading ? (
+              <p style={{ fontSize: '14px', color: '#64748b' }}>AI가 밤사이 뉴스를 분석하고 있습니다...</p>
+            ) : (
+              summary.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))
+            )}
           </ul>
         </div>
       </section>
@@ -71,14 +98,25 @@ function App() {
       <section className="section">
         <div className="card news-card">
           <h2 className="section-title">주요 뉴스</h2>
-          <div className="news-item">
-            <p className="news-tag">반도체</p>
-            <p className="news-text">엔비디아, 시가총액 2조 달러 돌파 눈앞...</p>
-          </div>
-          <div className="news-item">
-            <p className="news-tag">경제지표</p>
-            <p className="news-text">신규 실업수당 청구 건수 예상치 하회...</p>
-          </div>
+          {isLoadingNews ? (
+            <p>뉴스를 불러오는 중...</p>
+          ) : (
+            news.map((item, index) => (
+              <div key={index} className="news-item">
+                <a 
+                  href={item.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="news-text"
+                >
+                  {item.title}
+                </a>
+                <p className="news-date">
+                  {item.pubDate}
+                </p>
+              </div>
+            ))
+          )}
         </div>
       </section>
 

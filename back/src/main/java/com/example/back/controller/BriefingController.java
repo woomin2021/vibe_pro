@@ -1,6 +1,7 @@
 package com.example.back.controller;
 
 import com.example.back.dto.IndexDto;
+import com.example.back.dto.NewsDto;
 import com.example.back.service.BriefingService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,5 +24,15 @@ public class BriefingController {
     @GetMapping("/indices")
     public List<IndexDto> getIndices() {
         return briefingService.getIndices();
+    }
+
+    @GetMapping("/news")
+    public List<NewsDto> getNews() {
+        return briefingService.getNews();
+    }
+
+    @GetMapping("/summary")
+    public List<String> getSummary() {
+        return briefingService.getAiSummary();
     }
 }
