@@ -20,8 +20,14 @@ function App() {
         // 2. 뉴스 목록 가져오기
         fetch("/api/briefing/news")
             .then(res => res.json())
-            .then(data => setNews(data))
-            .catch(err => console.error('Error fetching news:', err));
+            .then(data => {
+                setNews(data);
+                setIsLoadingNews(false); // 👈 이 줄이 있는지 확인! 없으면 추가해 주세요.
+            })
+            .catch(err => {
+                console.error('Error fetching news:', err);
+                setIsLoadingNews(false); // 👈 에러 나도 로딩은 꺼줘야 함
+            });
 
         // 3. AI 요약 데이터 가져오기
         setIsSummaryLoading(true);
