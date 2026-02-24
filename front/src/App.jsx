@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
     // 지수 데이터 페칭
-    fetch('http://localhost:8080/api/briefing/indices')
+    fetch('http://43.203.219.219:8080')
       .then(response => response.json())
       .then(data => {
         setIndices(data);
