@@ -9,7 +9,7 @@ function App() {
   const [isLoadingNews, setIsLoadingNews] = useState(true);
   const [isSummaryLoading, setIsSummaryLoading] = useState(true);
   const today = "2026년 2월 23일";
-
+    // 전체적인 프론트 수정 완료
     useEffect(() => {
         // 1. 주요 지수 데이터 가져오기
         fetch("/api/briefing/indices") // 엔드포인트 확인!
@@ -22,11 +22,11 @@ function App() {
             .then(res => res.json())
             .then(data => {
                 setNews(data);
-                setIsLoadingNews(false); // 👈 이 줄이 있는지 확인! 없으면 추가해 주세요.
+                setIsLoadingNews(false); //
             })
             .catch(err => {
                 console.error('Error fetching news:', err);
-                setIsLoadingNews(false); // 👈 에러 나도 로딩은 꺼줘야 함
+                setIsLoadingNews(false); //
             });
 
         // 3. AI 요약 데이터 가져오기
