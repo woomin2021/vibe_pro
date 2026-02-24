@@ -10,43 +10,34 @@ function App() {
   const [isSummaryLoading, setIsSummaryLoading] = useState(true);
   const today = "2026년 2월 23일";
 
-  useEffect(() => {
-    // 지수 데이터 페칭
-    fetch('http://43.203.219.219:8080')
-      .then(response => response.json())
-      .then(data => {
-        setIndices(data);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching indices:', error);
-        setIsLoading(false);
-      });
+    useEffect(() => {
+        // 1. 주요 지수 데이터 가져오기
+        fetch("/api/briefing/indices") // 엔드포인트 확인!
+            .then(res => res.json())
+            .then(data => setIndices(data))
+            .catch(err => console.error('Error fetching indices:', err));
 
-    // 뉴스 데이터 페칭
-    fetch('http://localhost:8080/api/briefing/news')
-      .then(response => response.json())
-      .then(data => {
-        setNews(data);
-        setIsLoadingNews(false);
-      })
-      .catch(error => {
-        console.error('Error fetching news:', error);
-        setIsLoadingNews(false);
-      });
+        // 2. 뉴스 목록 가져오기
+        fetch("/api/briefing/news")
+            .then(res => res.json())
+            .then(data => setNews(data))
+            .catch(err => console.error('Error fetching news:', err));
 
-    // AI 요약 데이터 페칭
-    fetch('http://localhost:8080/api/briefing/summary')
-      .then(response => response.json())
-      .then(data => {
-        setSummary(data);
-        setIsSummaryLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching summary:', error);
-        setIsSummaryLoading(false);
-      });
-  }, []);
+        // 3. AI 요약 데이터 가져오기
+        setIsSummaryLoading(true);
+        fetch("/api/briefing/summary")
+            .then(res => res.json())
+            .then(data => {
+                setSummary(data);
+                setIsSummaryLoading(false);
+            })
+            .catch(err => {
+                console.error('Error fetching summary:', err);
+                setIsSummaryLoading(false);
+            });
+
+        setIsLoading(false); // 전체 로딩 종료
+    }, []);
 
   return (
     <div className="container">
